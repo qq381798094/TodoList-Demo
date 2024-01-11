@@ -19,18 +19,20 @@
   const filterStockList = ref([])
   const filterContentList = ref([])
 
-  const valueFlag = ref(true)
+  //   用于初始化判断数据是否加载成功
+  const isValue = ref(false)
 
   watchEffect(() => {
     // 判断 input 有值但是数组为空的情况
-    if (inputValue.value != '' && filterContentList.value.length == 0) {
-      // 没有需要的内容
-      valueFlag.value = false
-    } else {
-      valueFlag.value = true
-    }
+    // if (inputValue.value != '' && filterContentList.value.length === 0) {
+    //   // 没有需要的内容
+    //   valueFlag.value = false
+    // } else {
+    //   valueFlag.value = true
+    // }
 
     if (isChecked.value) {
+      isValue.value = true
       // 一：只看库存的情况
       filterStockList.value.splice(0)
       filterContentList.value.push(
@@ -77,6 +79,7 @@
         )
       } else {
         filterContentList.value.splice(0)
+        filterContentList.value.push(...categoryList.value)
       }
     }
   })
@@ -87,13 +90,8 @@
     <!-- 搜索栏 -->
     <SearchBar v-model:inputValue="inputValue" v-model:isChecked="isChecked" />
     <!-- 列表 -->
-    <ProductTable
-      v-show="valueFlag === true"
-      :categoryList="
-        filterContentList.length === 0 ? categoryList : filterContentList
-      "
-    />
-    <div class="empty" v-show="valueFlag === false">当前库存并无当前商品</div>
+    <ProductTable :categoryList="filterContentList" />
+    <!-- <div class="empty" v-show="valueFlag === false">当前库存并无当前商品</div> -->
   </div>
 </template>
 
