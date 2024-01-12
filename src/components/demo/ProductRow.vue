@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  defineEmits(['hide'])
   defineProps<{
     name: string
     price: string

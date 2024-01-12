@@ -1,25 +1,12 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import ProductCategoryRow from './ProductCategoryRow.vue'
   import ProductRow from './ProductRow.vue'
-
-  type CategoryListItem = {
-    category: string
-    price: string
-    stocked: boolean
-    name: string
-  }
-  type CategoryList = CategoryListItem[]
+  import { type CategoryListItem } from '@/types/product'
 
   const props = defineProps<{
-    categoryList: CategoryList
+    categoryList: CategoryListItem[]
   }>()
-
-  const cateTitle = ref<string[]>([])
-  cateTitle.value.push(
-    ...Array.from(new Set(props.categoryList.map((item) => item.category))),
-  )
-  console.log(cateTitle.value)
 </script>
 
 <template>
@@ -29,12 +16,14 @@
       <span class="price">价格</span>
     </div>
 
-    <div class="category-box" v-for="title in cateTitle" :key="title">
-      <ProductCategoryRow :title="title" />
+    <div v-for="(item, index) in categoryList" :key="item.name">
+      <ProductCategoryRow
+        v-if="
+          categoryList[index - 1]?.category !== categoryList[index].category
+        "
+        :title="item.category"
+      />
       <ProductRow
-        v-for="item in categoryList"
-        v-show="item.category === title"
-        :key="item.category"
         :name="item.name"
         :price="item.price"
         :stocked="item.stocked"
